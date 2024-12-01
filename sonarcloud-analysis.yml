@@ -1,0 +1,27 @@
+name: SonarCloud Analysis
+on:
+  push:
+    branches:
+      - main
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run SonarCloud Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          curl -sSL https://sonarcloud.io/static/curl/sonar-scanner-cli-linux.zip > sonar.zip
+          unzip sonar.zip
+          ./sonar-scanner-*/bin/sonar-scanner \
+            -Dsonar.projectKey=your_project_key \
+            -Dsonar.organization=your_organization \
+            -Dsonar.host.url=https://sonarcloud.io
